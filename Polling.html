@@ -8,13 +8,11 @@
         margin-top: 50px;
         font-family: "Orbitron", sans-serif;
       }
-      
       body {
         background-color: black;
         font-family: "Orbitron", sans-serif;
         color: white;
       }
-      
       button {
         display: inline-block;
         padding: 20px 40px;
@@ -26,29 +24,20 @@
         box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
         transition: all 0.3s;
       }
-      
       button:hover {
         box-shadow: 0px 10px 10px rgba(0,0,0,0.6);
         transform: translateY(-5px);
       }
-      
       #buttons {
         display: flex;
         justify-content: center;
       }
-      
       #home-button {
         display: none;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-      }
-      
-      body {
-        background-color: black;
-        font-family: "Orbitron", sans-serif;
-        color: white;
       }
     </style>
   </head>
@@ -59,21 +48,16 @@
       <button>No</button>
     </div>
     <button id="home-button">Home</button>
-    
     <script>
-      const questions = [  "Do you like dogs?",  "Do you like cats?",  "Do you like birds?",  "Do you like fish?",  "Do you like reptiles?"];
-      
+      const questions = [ "Do you like dogs?", "Do you like cats?", "Do you like birds?", "Do you like fish?", "Do you like reptiles?"];
       let currentQuestion = 0;
       let answers = [];
-      
       const questionContainer = document.getElementById("question-container");
       const buttons = document.getElementById("buttons");
       const homeButton = document.getElementById("home-button");
-      
       function showQuestion() {
         questionContainer.textContent = questions[currentQuestion];
       }
-      
       buttons.addEventListener("click", function(event) {
         if (event.target.matches("button")) {
           answers.push(event.target.textContent);
@@ -87,11 +71,10 @@
           }
         }
       });
-      
       homeButton.addEventListener("click", function() {
         window.location.href = "index.html";
       });
-      
       showQuestion();
     </script>
-  </body
+  </body>
+</html>

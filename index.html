@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>My Landing Page</title>
+  <style>
+    .content {
+      display: none;
+      text-align: center;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: black;
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 40px;
+      font-family: Arial, sans-serif;
+    }
+    #showContentBtn {
+      font-size: 40px;
+      padding: 20px 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="showContentBtn">Begin</button>
+
+  <div class="content">
+    <img src="https://i.imgur.com/ih1Rxtm.png" alt="Aubie">
+    <div class="overlay">
+      <h1>Welcome to Eagle Eye!</h1>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("showContentBtn").addEventListener("click", function(){
+      document.querySelector(".content").style.display = "block";
+      this.remove();
+      setTimeout(function(){
+        window.location.href = "options.html";
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Saved Posts</title>
+  </head>
+  <body>
+    <h1>Saved Posts</h1>
+    <ul id="saved-posts"></ul>
+    <script>
+      // Check if there are any saved posts in local storage
+      if (localStorage.getItem("savedPosts")) {
+        // If there are, display them
+        document.getElementById("saved-posts").innerHTML = localStorage.getItem("savedPosts");
+      }
+
+      // Function to save a post
+      function savePost(post) {
+        // Get the saved posts from local storage
+        var savedPosts = localStorage.getItem("savedPosts");
+
+        // If there are no saved posts, create a new list
+        if (!savedPosts) {
+          savedPosts = "<li>" + post + "</li>";
+        } else {
+          // If there are saved posts, add the new post to the list
+          savedPosts += "<li>" + post + "</li>";
+        }
+
+        // Save the updated list of posts to local storage
+        localStorage.setItem("savedPosts", savedPosts);
+
+        // Update the displayed list of saved posts
+        document.getElementById("saved-posts").innerHTML = savedPosts;
+      }
+    </script>
+  </body>
+</html>

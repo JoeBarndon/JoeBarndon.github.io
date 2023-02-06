@@ -39,20 +39,43 @@
   <script>
     window.onload = function() {
       const feed = document.querySelector('.feed');
-  
-      const parser = new RSSParser();
-      parser.parseURL('https://www.govinfo.gov/rss/bills.xml', function(err, feedData) {
-        if (err) throw err;
-        feedData.items.slice(0, 3).forEach(item => {
-          const feedItem = document.createElement('div');
-          feedItem.classList.add('feed-item');
-          feedItem.innerHTML = `
-            <h3>${item.title}</h3>
-            <p>${item.content}</p>
-          `;
-          feed.appendChild(feedItem);
-        });
-      });
-    }
+    
+      // Fetch the OPML file and parse it
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://www.govinfo.gov/rss/bills.xml', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(xhr.responseText, 'text/xml');
+          const outlines = xmlDoc.querySelectorAll('outline[type="rss"]');
+          
+          // Get the first feed from the list of outlines
+          const firstFeed = outlines[0];
+          if (firstFeed) {
+            const feedUrl = firstFeed.getAttribute('xmlUrl');
+    
+            // Fetch the actual content of the feed and display it
+            const parser = new RSSParser();
+            parser.parseURL(feedUrl, function(err, feedData) {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              feedData.items.slice(0, 3).forEach(item => {
+                const feedItem = document.createElement('div');
+                feedItem.classList.add('feed-item');
+                feedItem.innerHTML = `
+                  <h3>${item.title}</h3>
+                  <p>${item.content}</p>
+                `;
+                feed.appendChild(feedItem);
+              });
+            });
+          }
+        }
+      };
+      xhr.send();
+    };
+    
   </script>
 </html>

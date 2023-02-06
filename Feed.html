@@ -2,81 +2,42 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/rss-parser@2.0.3/dist/rss-parser.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <style>
       body {
         background-color: black;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-      
-      .feed {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px #ccc;
-      }
-      
-      .feed-item {
-        width: 100%;
-        padding: 20px;
-        border: 1px solid #ccc;
-        margin-bottom: 20px;
-        text-align: center;
+        color: white;
       }
     </style>
   </head>
-  <body>
-    <div class="feed">
-    </div>
-  </body>
-  <script>
-    window.onload = function() {
-      const feed = document.querySelector('.feed');
-    
-      // Fetch the OPML file and parse it
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://www.govinfo.gov/rss/bills.xml', true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(xhr.responseText, 'text/xml');
-          const outlines = xmlDoc.querySelectorAll('outline[type="rss"]');
-          
-          // Get the first feed from the list of outlines
-          const firstFeed = outlines[0];
-          if (firstFeed) {
-            const feedUrl = firstFeed.getAttribute('xmlUrl');
-    
-            // Fetch the actual content of the feed and display it
-            const parser = new RSSParser();
-            parser.parseURL(feedUrl, function(err, feedData) {
-              if (err) {
-                console.log(err);
-                return;
-              }
-              feedData.items.slice(0, 3).forEach(item => {
-                const feedItem = document.createElement('div');
-                feedItem.classList.add('feed-item');
-                feedItem.innerHTML = `
-                  <h3>${item.title}</h3>
-                  <p>${item.content}</p>
-                `;
-                feed.appendChild(feedItem);
-              });
-            });
-          }
+  <body onload="fetchRSS()">
+    <div id="feed"></div>
+<script>
+  const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+  const RSS_URL = "https://www.govinfo.gov/rss/bills.xml";
+
+  function fetchRSS() {
+    $.ajax({
+      url: CORS_PROXY + RSS_URL,
+      type: "GET",
+      success: function(res) {
+        const items = $(res).find("item");
+        let content = "";
+
+        for (let i = 0; i < items.length && i < 5; i++) {
+          const item = items[i];
+          content += "<h2>" + $(item).find("title").text() + "</h2>";
+          content += "<p>" + $(item).find("description").text() + "</p>";
         }
-      };
-      xhr.send();
-    };
-    
-  </script>
+
+        $("#feed").html(content);
+      },
+      error: function(err) {
+        console.error(err);
+      },
+    });
+  }
+</script>
+
+  </body>
 </html>

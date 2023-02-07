@@ -1,2 +1,49 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      body {
+        background-color: black;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    
+    <script>
+      const url = "https://cors-anywhere.herokuapp.com/https://www.govinfo.gov/rss/bills-enr.xml";
+      const content = document.getElementById("content");
+      
+      fetch(url)
+        .then(response => response.text())
+        .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+        .then(data => {
+          const items = data.querySelectorAll("item");
+          
+          items.forEach(item => {
+            const title = item.querySelector("title").innerHTML;
+            const link = item.querySelector("link").innerHTML;
+            const description = item.querySelector("description").innerHTML;
+            
+            const article = document.createElement("article");
+            
+            const titleElement = document.createElement("h2");
+            titleElement.innerHTML = title;
+            article.appendChild(titleElement);
+            
+            const linkElement = document.createElement("a");
+            linkElement.href = link;
+            linkElement.innerHTML = link;
+            article.appendChild(linkElement);
+            
+            const descriptionElement = document.createElement("p");
+            descriptionElement.innerHTML = description;
+            article.appendChild(descriptionElement);
+            
+            content.appendChild(article);
+          });
+        });
+    </script>
+  </body>
+</html>

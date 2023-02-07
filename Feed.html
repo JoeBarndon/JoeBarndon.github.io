@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>RealClearPolitics Feed Page</title>
-  </head>
-  <body>
-    <h1>RealClearPolitics News Feed</h1>
-    <div id="feedContainer"></div>
+<head>
+  <script>
+    // Fetch the XML data
+    fetch("https://cors-anywhere.herokuapp.com/https://www.congress.gov/rss/notification.xml")
+    .then(response => response.text())
+    .then(data => {
+      // Convert the XML data to JSON
+      let parser = new DOMParser();
+      let xml = parser.parseFromString(data, "text/xml");
+      let json = xmlToJson(xml);
+  
+      console.log(json);
+    });
 
-    <script>
-      // Fetch the XML feed
-      fetch("https://www.realclearpolitics.com/index.xml")
-        .then(response => response.text())
-        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
-        .then(data => {
-          // Loop through each item in the channel
-          let items = data.querySelectorAll("item");
-          items.forEach(item => {
-            let title = item.querySelector("title").innerHTML;
-            let link = item.querySelector("link").innerHTML;
-            let description = item.querySelector("description").innerHTML;
+    // Function to convert XML to JSON
+    function xmlToJson(xml) {
+      // Create the return object
+      let obj = {};
 
-            // Append the item information to the container
-            let feedContainer = document.querySelector("#feedContainer");
-            feedContainer.innerHTML += `
-              <h2><a href="${link}">${title}</a></h2>
-              <p>${description}</p>
-            `;
-          });
-        });
-    </script>
-  </body>
+      if (xml.nodeType == 1) {
+        // do attributes
+        if (xml.attributes.length > 0) {
+          obj["@attributes"] = {};
+          for (let j = 0; j < xml.attributes.length; j++) {
+            let attribute = xml.attributes.item(j);
+            obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+          }
+        }
+      } else if (xml.nodeType == 3) {
+        obj = xml.nodeValue;
+      }
+
+      // do children
+      if (xml.hasChildNodes()) {
+        for (let i = 0; i < xml.childNodes.length; i++) {
+          let item = xml.childNodes.item(i);
+          let nodeName = item.nodeName;
+          if (typeof obj[nodeName] == "undefined") {
+            obj[nodeName] = xmlToJson(item);
+          } else {
+            if (typeof obj[nodeName].push == "undefined") {
+              let old = obj[nodeName];
+              obj[nodeName] = [];
+              obj[nodeName].push(old);
+            }
+            obj[nodeName].push(xmlToJson(item));
+          }
+        }
+      }
+      return obj;
+    };
+  </script>
+</head>
+<body>
+</body>
 </html>

@@ -1,43 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-    <style>
-      body {
-        background-color: black;
-        color: white;
-      }
-    </style>
+    <title>RealClearPolitics Feed Page</title>
   </head>
-  <body onload="fetchRSS()">
-    <div id="feed"></div>
-<script>
-  const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
-  const RSS_URL = "https://www.govinfo.gov/rss/bills.xml";
+  <body>
+    <h1>RealClearPolitics News Feed</h1>
+    <div id="feedContainer"></div>
 
-  function fetchRSS() {
-    $.ajax({
-      url: CORS_PROXY + RSS_URL,
-      type: "GET",
-      success: function(res) {
-        const items = $(res).find("item");
-        let content = "";
+    <script>
+      // Fetch the XML feed
+      fetch("https://www.realclearpolitics.com/index.xml")
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(data => {
+          // Loop through each item in the channel
+          let items = data.querySelectorAll("item");
+          items.forEach(item => {
+            let title = item.querySelector("title").innerHTML;
+            let link = item.querySelector("link").innerHTML;
+            let description = item.querySelector("description").innerHTML;
 
-        for (let i = 0; i < items.length && i < 5; i++) {
-          const item = items[i];
-          content += "<h2>" + $(item).find("title").text() + "</h2>";
-          content += "<p>" + $(item).find("description").text() + "</p>";
-        }
-
-        $("#feed").html(content);
-      },
-      error: function(err) {
-        console.error(err);
-      },
-    });
-  }
-</script>
-
+            // Append the item information to the container
+            let feedContainer = document.querySelector("#feedContainer");
+            feedContainer.innerHTML += `
+              <h2><a href="${link}">${title}</a></h2>
+              <p>${description}</p>
+            `;
+          });
+        });
+    </script>
   </body>
 </html>

@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <style>
       body {
         background-color: #333;
@@ -21,37 +23,32 @@
     </div>
 
     <script>
+      fetch('https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
+  .then(response => response.json())
+  .then(data => {
+    data.bills.forEach(bill => {
+      const billEl = document.createElement('div');
+      billEl.classList.add('bill');
+      billEl.innerHTML = `
+        <h2>${bill.title}</h2>
+        <p>Congress: ${bill.congress}</p>
+        <p>Latest Action: ${bill.latestAction.text}</p>
+        <p>Bill Number: ${bill.number}</p>
+        <p>Origin Chamber: ${bill.originChamber}</p>
+        <p>Bill Type: ${bill.type}</p>
+        <p>Update Date: ${bill.updateDate}</p>
+      `;
+      billsContainer.appendChild(billEl);
+    });
+  });
+
       const data = {
         "bills": [
           {
-            "congress": 117,
-            "latestAction": {
-              "actionDate": "2022-04-06",
-              "text": "Became Public Law No: 117-108."
-            },
-            "number": "3076",
-            "originChamber": "House",
-            "originChamberCode": "H",
-            "title": "Postal Service Reform Act of 2022",
-            "type": "HR",
-            "updateDate": "2022-09-29",
-            "updateDateIncludingText": "2022-09-29T03:27:05Z",
-            "url": "https://api.congress.gov/v3/bill/117/hr/3076?format=json"
+            "url": "https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY"
           },
           {
-            "congress": 117,
-            "latestAction": {
-              "actionDate": "2022-04-06",
-              "text": "Read twice. Placed on Senate Legislative Calendar under General Orders. Calendar No. 343."
-            },
-            "number": "3599",
-            "originChamber": "House",
-            "originChamberCode": "H",
-            "title": "Federal Rotational Cyber Workforce Program Act of 2021",
-            "type": "HR",
-            "updateDate": "2022-09-29",
-            "updateDateIncludingText": "2022-09-29T03:41:50Z",
-            "url": "https://api.congress.gov/v3/bill/117/hr/3599?format=json"
+            "url": "https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY"
           },
         ],
       };

@@ -3,79 +3,63 @@
   <head>
     <meta charset="utf-8">
     <style>
-      #question-container {
-        font-size: 24px;
-        text-align: center;
-        margin-top: 50px;
-        font-family: "Orbitron", sans-serif;
-      }
       body {
         background-color: black;
-        font-family: "Orbitron", sans-serif;
         color: white;
-      }
-      button {
-        display: inline-block;
-        padding: 20px 40px;
-        font-size: 18px;
-        margin: 20px 40px;
-        border: none;
-        border-radius: 5px;
-        background-color: orange;
-        box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
-        transition: all 0.3s;
-      }
-      button:hover {
-        box-shadow: 0px 10px 10px rgba(0,0,0,0.6);
-        transform: translateY(-5px);
-      }
-      #buttons {
-        display: flex;
-        justify-content: center;
-      }
-      #home-button {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        padding: 20px;
+        font-family: Arial, sans-serif;
       }
     </style>
   </head>
   <body>
-    <div id="question-container"></div>
-    <div id="buttons">
-      <button>Yes</button>
-      <button>No</button>
-    </div>
-    <button id="home-button">Home</button>
+    <div id="questionContainer"></div>
+
     <script>
-      const questions = [ "Do you like dogs?", "Do you like cats?", "Do you like birds?", "Do you like fish?", "Do you like reptiles?"];
-      let currentQuestion = 0;
-      let answers = [];
-      const questionContainer = document.getElementById("question-container");
-      const buttons = document.getElementById("buttons");
-      const homeButton = document.getElementById("home-button");
-      function showQuestion() {
-        questionContainer.textContent = questions[currentQuestion];
-      }
-      buttons.addEventListener("click", function(event) {
-        if (event.target.matches("button")) {
-          answers.push(event.target.textContent);
-          currentQuestion++;
-          if (currentQuestion === questions.length) {
-            questionContainer.textContent = "Your answers: " + answers.join(", ");
-            buttons.style.display = "none";
-            homeButton.style.display = "block";
-          } else {
-            showQuestion();
-          }
-        }
-      });
-      homeButton.addEventListener("click", function() {
-        window.location.href = "index.html";
-      });
-      showQuestion();
+      const bills = [
+        {
+            "congress": 117,
+            "latestAction": {
+                "actionDate": "2022-04-06",
+                "text": "Became Public Law No: 117-108."
+            },
+            "number": "3076",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "Postal Service Reform Act of 2022",
+            "type": "HR",
+            "updateDate": "2022-09-29",
+            "updateDateIncludingText": "2022-09-29T03:27:05Z",
+            "url": "https://api.congress.gov/v3/bill/117/hr/3076?format=json"
+        },
+        {
+            "congress": 117,
+            "latestAction": {
+                "actionDate": "2022-04-06",
+                "text": "Read twice. Placed on Senate Legislative Calendar under General Orders. Calendar No. 343."
+            },
+            "number": "3599",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "Federal Rotational Cyber Workforce Program Act of 2021",
+            "type": "HR",
+            "updateDate": "2022-09-29",
+            "updateDateIncludingText": "2022-09-29T03:41:50Z",
+            "url": "https://api.congress.gov/v3/bill/117/hr/3599?format=json"
+        },
+      ];
+    
+      const questionContainer = document.getElementById("questionContainer");
+      questionContainer.innerHTML = `Do you support the ${bills[0].title} bill?`;
+    
+      const yesButton = document.createElement("button");
+      yesButton.innerHTML = "Yes";
+    
+      const noButton = document.createElement("button");
+      noButton.innerHTML = "No";
+    
+      questionContainer.appendChild(yesButton);
+      questionContainer.appendChild(noButton);
     </script>
+    
   </body>
 </html>

@@ -23,52 +23,32 @@
     </div>
 
     <script>
-      fetch('https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
-  .then(response => response.json())
-  .then(data => {
-    data.bills.forEach(bill => {
-      const billEl = document.createElement('div');
-      billEl.classList.add('bill');
-      billEl.innerHTML = `
-        <h2>${bill.title}</h2>
-        <p>Congress: ${bill.congress}</p>
-        <p>Latest Action: ${bill.latestAction.text}</p>
-        <p>Bill Number: ${bill.number}</p>
-        <p>Origin Chamber: ${bill.originChamber}</p>
-        <p>Bill Type: ${bill.type}</p>
-        <p>Update Date: ${bill.updateDate}</p>
-      `;
-      billsContainer.appendChild(billEl);
-    });
-  });
+      const fetchBills = () => {
+        fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
+          .then(response => response.json())
+          .then(data => {
+            const billsContainer = document.querySelector('#bills');
+            billsContainer.innerHTML = '';
 
-      const data = {
-        "bills": [
-          {
-            "url": "https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY"
-          },
-          {
-            "url": "https://api.congress.gov/v3/bill/117?fromDateTime=2022-08-04T04:02:00Z&toDateTime=2022-09-30T04:03:00Z&sort=updateDate+desc&api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY"
-          },
-        ],
+            data.bills.forEach(bill => {
+              const billEl = document.createElement('div');
+              billEl.classList.add('bill');
+              billEl.innerHTML = `
+                <h2>${bill.title}</h2>
+                <p>Congress: ${bill.congress}</p>
+                <p>Latest Action: ${bill.latestAction.text}</p>
+                <p>Bill Number: ${bill.number}</p>
+                <p>Origin Chamber: ${bill.originChamber}</p>
+                <p>Bill Type: ${bill.type}</p>
+                <p>Update Date: ${bill.updateDate}</p>
+              `;
+              billsContainer.appendChild(billEl);
+            });
+          });
       };
 
-      const billsContainer = document.querySelector('#bills');
-
-      data.bills.forEach(bill => {
-        const billEl = document.createElement('div');
-        billEl.classList.add('bill');
-        billEl.innerHTML = `
-          <h2>${bill.title}</h2>
-          <p>Congress: ${bill.congress}</p>
-          <p>Latest Action: ${bill.latestAction.text}</p>
-          <p>Bill Number: ${bill.number}</p>
-          <p>Origin Chamber: ${bill.originChamber}</p>
-          <p>Bill Type: ${bill.type}</p>
-          <p>Update Date: ${bill.updateDate}</p>
-        `;
-        billsContainer.appendChild(billEl);
-      });
+      fetchBills();
+      setInterval(fetchBills, 30000);
     </script>
   </body>
 </html>

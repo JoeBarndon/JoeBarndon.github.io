@@ -1,49 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      body {
-        background-color: black;
-        color: white;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="content"></div>
-    
-    <script>
-      const url = "https://cors-anywhere.herokuapp.com/https://www.govinfo.gov/rss/bills-enr.xml";
-      const content = document.getElementById("content");
-      
-      fetch(url)
-        .then(response => response.text())
-        .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-        .then(data => {
-          const items = data.querySelectorAll("item");
-          
-          items.forEach(item => {
-            const title = item.querySelector("title").innerHTML;
-            const link = item.querySelector("link").innerHTML;
-            const description = item.querySelector("description").innerHTML;
-            
-            const article = document.createElement("article");
-            
-            const titleElement = document.createElement("h2");
-            titleElement.innerHTML = title;
-            article.appendChild(titleElement);
-            
-            const linkElement = document.createElement("a");
-            linkElement.href = link;
-            linkElement.innerHTML = link;
-            article.appendChild(linkElement);
-            
-            const descriptionElement = document.createElement("p");
-            descriptionElement.innerHTML = description;
-            article.appendChild(descriptionElement);
-            
-            content.appendChild(article);
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script>
+    $(document).ready(function() {
+      $.ajax({
+        url: 'https://cors-anywhere.herokuapp.com/https://www.govinfo.gov/rss/bills-enr.xml',
+        type: 'GET',
+        dataType: 'xml',
+        success: function(data) {
+          var items = [];
+          $(data).find("item").each(function() {
+            var title = $(this).find("title").text();
+            var link = $(this).find("link").text();
+            items.push("<p><a href='" + link + "'>" + title + "</a></p>");
           });
-        });
-    </script>
-  </body>
+          $("#content").html(items.join(""));
+        }
+      });
+    });
+  </script>
+</body>
 </html>
+$.get("https://www.govinfo.gov/rss/bills-enr.xml", function(data) {
+  var xml = $.parseXML(data);
+  $(xml).find("item").each(function() {
+    var title = $(this).find("title").text();
+    var link = $(this).find("link").text();
+    $("#feed").append("<p><a href='" + link + "'>" + title + "</a></p>");
+  });
+});

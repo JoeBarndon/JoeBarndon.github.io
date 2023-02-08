@@ -1,42 +1,77 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    body {
-      background-color: black;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <div id="content"></div>
+  <head>
+    <style>
+      body {
+        background-color: #333;
+        color: #fff;
+        font-family: sans-serif;
+      }
 
-  <script>
-    $(document).ready(function() {
-      $.ajax({
-        url: 'https://cors-anywhere.herokuapp.com/https://www.govinfo.gov/rss/bills-enr.xml',
-        type: 'GET',
-        dataType: 'xml',
-        success: function(data) {
-          var items = [];
-          $(data).find("item").each(function() {
-            var title = $(this).find("title").text();
-            var link = $(this).find("link").text();
-            items.push("<p><a href='" + link + "'>" + title + "</a></p>");
-          });
-          $("#content").html(items.join(""));
-        }
+      .bill {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #444;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bills</h1>
+    <div id="bills">
+      <!-- bills will be added here -->
+    </div>
+
+    <script>
+      const data = {
+        "bills": [
+          {
+            "congress": 117,
+            "latestAction": {
+              "actionDate": "2022-04-06",
+              "text": "Became Public Law No: 117-108."
+            },
+            "number": "3076",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "Postal Service Reform Act of 2022",
+            "type": "HR",
+            "updateDate": "2022-09-29",
+            "updateDateIncludingText": "2022-09-29T03:27:05Z",
+            "url": "https://api.congress.gov/v3/bill/117/hr/3076?format=json"
+          },
+          {
+            "congress": 117,
+            "latestAction": {
+              "actionDate": "2022-04-06",
+              "text": "Read twice. Placed on Senate Legislative Calendar under General Orders. Calendar No. 343."
+            },
+            "number": "3599",
+            "originChamber": "House",
+            "originChamberCode": "H",
+            "title": "Federal Rotational Cyber Workforce Program Act of 2021",
+            "type": "HR",
+            "updateDate": "2022-09-29",
+            "updateDateIncludingText": "2022-09-29T03:41:50Z",
+            "url": "https://api.congress.gov/v3/bill/117/hr/3599?format=json"
+          },
+        ],
+      };
+
+      const billsContainer = document.querySelector('#bills');
+
+      data.bills.forEach(bill => {
+        const billEl = document.createElement('div');
+        billEl.classList.add('bill');
+        billEl.innerHTML = `
+          <h2>${bill.title}</h2>
+          <p>Congress: ${bill.congress}</p>
+          <p>Latest Action: ${bill.latestAction.text}</p>
+          <p>Bill Number: ${bill.number}</p>
+          <p>Origin Chamber: ${bill.originChamber}</p>
+          <p>Bill Type: ${bill.type}</p>
+          <p>Update Date: ${bill.updateDate}</p>
+        `;
+        billsContainer.appendChild(billEl);
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-$.get("https://www.govinfo.gov/rss/bills-enr.xml", function(data) {
-  var xml = $.parseXML(data);
-  $(xml).find("item").each(function() {
-    var title = $(this).find("title").text();
-    var link = $(this).find("link").text();
-    $("#feed").append("<p><a href='" + link + "'>" + title + "</a></p>");
-  });
-});

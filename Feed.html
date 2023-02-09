@@ -2,27 +2,35 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Proposed Bills</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
       body {
         background-color: #333;
         color: #fff;
         font-family: sans-serif;
       }
-
       .bill {
         padding: 10px;
         margin-bottom: 10px;
         background-color: #444;
+        box-shadow: 0px 0px 5px 0px rgba(255, 255, 255, 0.2);
         cursor: pointer;
+      }
+      h1 {
+        padding-top: 30px;
+        text-align: center;
       }
     </style>
   </head>
   <body>
-    <h1>Bills</h1>
-    <div id="bills">
-      <!-- bills will be added here -->
+    <div class="container">
+      <h1>Bills Management System</h1>
+      <div id="bills" class="row">
+        <!-- bills will be added here -->
+      </div>
     </div>
-
     <script>
       const fetchBills = () => {
         fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')

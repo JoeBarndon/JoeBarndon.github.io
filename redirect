@@ -1,0 +1,3 @@
+billEl.addEventListener('click', function() {
+  window.open(bill.link, '_blank');
+});

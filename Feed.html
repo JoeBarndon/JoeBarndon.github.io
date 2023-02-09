@@ -13,6 +13,7 @@
         padding: 10px;
         margin-bottom: 10px;
         background-color: #444;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -42,6 +43,11 @@
                 <p>Bill Type: ${bill.type}</p>
                 <p>Update Date: ${bill.updateDate}</p>
               `;
+
+              billEl.addEventListener('click', function() {
+                window.open(`https://www.congress.gov/bill/${bill.congress}/${bill.type}/${bill.number}`, '_blank');
+              });
+
               billsContainer.appendChild(billEl);
             });
           });

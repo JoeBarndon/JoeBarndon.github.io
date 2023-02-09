@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <style>
       body {
         background-color: #333;
@@ -14,6 +15,17 @@
         margin-bottom: 10px;
         background-color: #444;
       }
+
+      .chart-container {
+        width: 800px;
+        height: 400px;
+        position: relative;
+      }
+
+      .chart-container canvas {
+        width: 100%;
+        height: 100%;
+      }
     </style>
   </head>
   <body>
@@ -21,9 +33,14 @@
     <div id="questions">
       <!-- questions will be added here -->
     </div>
+    <div class="chart-container">
+      <canvas id="chart"></canvas>
+    </div>
 
     <script>
       let billIndex = 0;
+      let yesCount = 0;
+      let noCount = 0;
 
       const fetchBills = () => {
         fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
@@ -51,24 +68,56 @@
               <button id="yes">Yes</button>
               <button id="no">No</button>
             `;
-            questionsContainer.appendChild(questionEl);
-
-            const yesButton = document.querySelector('#yes');
+            questionsContainer.appendChild
+            const yesButton = questionEl.querySelector('#yes');
+            const noButton = questionEl.querySelector('#no');
             yesButton.addEventListener('click', () => {
+              yesCount++;
               billIndex++;
               fetchBills();
             });
-
-            const noButton = document.querySelector('#no');
             noButton.addEventListener('click', () => {
+              noCount++;
               billIndex++;
               fetchBills();
+            });
+    
+            const chartEl = document.querySelector('#chart');
+            const chart = new Chart(chartEl, {
+              type: 'bar',
+              data: {
+                labels: ['Yes', 'No'],
+                datasets: [
+                  {
+                    label: 'Votes',
+                    data: [yesCount, noCount],
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                  }
+                ]
+              },
+              options: {
+                scales: {
+                  yAxes: [
+                    {
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }
+                  ]
+                }
+              }
             });
           });
       };
-
       fetchBills();
-      setInterval(fetchBills, 3000);
     </script>
   </body>
-</html>
+  </html>    

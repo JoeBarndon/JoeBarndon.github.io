@@ -8,33 +8,72 @@
         color: #fff;
         font-family: sans-serif;
       }
-
-      table {
-        border-collapse: collapse;
-        width: 100%;
+      
+      .question {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #444;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-
-      th, td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
+      
+      #pie-chart {
+        width: 300px;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #yes-count {
+        background-color: orange;
+        width: 0;
+        height: 100%;
+        border-radius: 0 50% 50% 0;
+      }
+      
+      #no-count {
+        background-color: blue;
+        width: 100%;
+        height: 100%;
+        border-radius: 50% 0 0 50%;
+      }
+      
+      #vote-count {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 300px;
+        height: 100px;
+        margin-top: 20px;
+        font-size: 20px;
+      }
+      
+      #vote-count span {
+        padding: 10px;
+      }
+      
+      #yes-count span {
+        color: orange;
+      }
+      
+      #no-count span {
+        color: blue;
       }
     </style>
   </head>
   <body>
-    <h1>Bill Tally</h1>
-    <table id="bill-tally">
-      <tr>
-        <th>Bill Number</th>
-        <th>Bill Title</th>
-        <th>Support Count</th>
-        <th>Opposition Count</th>
-      </tr>
-    </table>
+    <h1>Support for Bills</h1>
+    <div id="questions">
+      <!-- questions will be added here -->
+    </div>
 
     <script>
       let billIndex = 0;
-      let billTally = {};
+      let yesCount = 0;
+      let noCount = 0;
 
       const fetchBills = () => {
         fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
@@ -56,28 +95,5 @@
               <p>Congress: ${bill.congress}</p>
               <p>Latest Action: ${bill.latestAction.text}</p>
               <p>Bill Number: ${bill.number}</p>
-              <p>Origin Chamber: ${bill.originChamber}</p>
-              <p>Bill Type: ${bill.type}</p>
-              <p>Update Date: ${bill.updateDate}</p>
-              <button id="yes">Yes</button>
-              <button id="no">No</button>
-            `;
-            questionsContainer.appendChild(questionEl);
-
-            const yesButton = document.querySelector('#yes');
-            yesButton.addEventListener('click', () => {
-              billIndex++;
-              if (!billTally[bill.number]) {
-                billTally[bill.number] = {
-                  title: bill.title,
-                  supportCount: 0,
-                  oppositionCount: 0,
-                };
-              }
-              billTally[bill.number].supportCount++;
-              updateBillTally();
-              fetchBills();
-            });
-
-            const noButton = document.querySelector('#no');
-            noButton.add
+              <p>Origin Chamber:
+                

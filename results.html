@@ -2,7 +2,6 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <style>
       body {
         background-color: #333;
@@ -10,43 +9,75 @@
         font-family: sans-serif;
       }
 
-      canvas {
-        padding: 20px;
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
       }
     </style>
   </head>
   <body>
-    <h1>Bill Voting Tally</h1>
-    <canvas id="pieChart" width="400" height="400"></canvas>
+    <h1>Bill Tally</h1>
+    <table id="bill-tally">
+      <tr>
+        <th>Bill Number</th>
+        <th>Bill Title</th>
+        <th>Support Count</th>
+        <th>Opposition Count</th>
+      </tr>
+    </table>
+
     <script>
-      const fetchVotes = () => {
+      let billIndex = 0;
+      let billTally = {};
+
+      const fetchBills = () => {
         fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
           .then(response => response.json())
-          .then(votes => {
-            const yesVotes = votes.filter(vote => vote.support === 'yes').length;
-            const noVotes = votes.filter(vote => vote.support === 'no').length;
+          .then(data => {
+            const questionsContainer = document.querySelector('#questions');
+            questionsContainer.innerHTML = '';
+            const bills = data.bills;
 
-            const pieChart = new Chart(document.querySelector('#pieChart'), {
-              type: 'pie',
-              data: {
-                labels: ['Yes', 'No'],
-                datasets: [{
-                  data: [yesVotes, noVotes],
-                  backgroundColor: ['#4CAF50', '#F44336']
-                }]
+            if (billIndex >= bills.length) {
+              billIndex = 0;
+            }
+
+            const bill = bills[billIndex];
+            const questionEl = document.createElement('div');
+            questionEl.classList.add('question');
+            questionEl.innerHTML = `
+              <h2>Do you support the bill "${bill.title}" ?</h2>
+              <p>Congress: ${bill.congress}</p>
+              <p>Latest Action: ${bill.latestAction.text}</p>
+              <p>Bill Number: ${bill.number}</p>
+              <p>Origin Chamber: ${bill.originChamber}</p>
+              <p>Bill Type: ${bill.type}</p>
+              <p>Update Date: ${bill.updateDate}</p>
+              <button id="yes">Yes</button>
+              <button id="no">No</button>
+            `;
+            questionsContainer.appendChild(questionEl);
+
+            const yesButton = document.querySelector('#yes');
+            yesButton.addEventListener('click', () => {
+              billIndex++;
+              if (!billTally[bill.number]) {
+                billTally[bill.number] = {
+                  title: bill.title,
+                  supportCount: 0,
+                  oppositionCount: 0,
+                };
               }
+              billTally[bill.number].supportCount++;
+              updateBillTally();
+              fetchBills();
             });
 
-            const totalVotes = yesVotes + noVotes;
-            document.querySelector('#yesVotes').innerText = `Yes: ${yesVotes} (${(yesVotes / totalVotes * 100).toFixed(2)}%)`;
-            document.querySelector('#noVotes').innerText = `No: ${noVotes} (${(noVotes / totalVotes * 100).toFixed(2)}%)`;
-          });
-      };
-
-      fetchVotes();
-      setInterval(fetchVotes, 3000);
-    </script>
-    <p id="yesVotes"></p>
-    <p id="noVotes"></p>
-  </body>
-</html>
+            const noButton = document.querySelector('#no');
+            noButton.add

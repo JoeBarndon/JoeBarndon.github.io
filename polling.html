@@ -8,23 +8,23 @@
         color: #fff;
         font-family: sans-serif;
       }
-
       .question {
         padding: 10px;
         margin-bottom: 10px;
         background-color: #444;
       }
+      .clickable {
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
-    <h1>Support for Bills</h1>
+    <h1>Vote</h1>
     <div id="questions">
-      <!-- questions will be added here -->
+      <!-- question area -->
     </div>
-
     <script>
       let billIndex = 0;
-
       const fetchBills = () => {
         fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
           .then(response => response.json())
@@ -32,15 +32,13 @@
             const questionsContainer = document.querySelector('#questions');
             questionsContainer.innerHTML = '';
             const bills = data.bills;
-
             if (billIndex >= bills.length) {
               billIndex = 0;
             }
-
             const bill = bills[billIndex];
-            const questionEl = document.createElement('div');
-            questionEl.classList.add('question');
-            questionEl.innerHTML = `
+            const billEl = document.createElement('div');
+            billEl.classList.add('question', 'clickable');
+            billEl.innerHTML = `
               <h2>Do you support the bill "${bill.title}" ?</h2>
               <p>Congress: ${bill.congress}</p>
               <p>Latest Action: ${bill.latestAction.text}</p>
@@ -51,14 +49,15 @@
               <button id="yes">Yes</button>
               <button id="no">No</button>
             `;
-            questionsContainer.appendChild(questionEl);
-
+            billEl.addEventListener('click', function() {
+              window.open(`https://www.congress.gov/bill/${bill.congress}/${bill.type}/${bill.number}`, '_blank');
+            })
+            questionsContainer.appendChild(billEl);
             const yesButton = document.querySelector('#yes');
             yesButton.addEventListener('click', () => {
               billIndex++;
               fetchBills();
             });
-
             const noButton = document.querySelector('#no');
             noButton.addEventListener('click', () => {
               billIndex++;
@@ -66,7 +65,6 @@
             });
           });
       };
-
       fetchBills();
       setInterval(fetchBills, 3000);
     </script>

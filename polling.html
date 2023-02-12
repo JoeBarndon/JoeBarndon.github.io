@@ -4,25 +4,34 @@
     <meta charset="utf-8">
     <style>
       body {
-        background-color: #333;
-        color: #fff;
-        font-family: sans-serif;
+        background-color: #03244d;
+        color: #dd550c;
+        font-family: "Homeland", sans-serif;
       }
       .question {
-        padding: 10px;
-        margin-bottom: 10px;
-        background-color: #444;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #3f3f3f;
+        border: 5px solid #dd550c;
+        border-radius: 5px;
       }
       .clickable {
         cursor: pointer;
+        background-color: #03244d;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 5px;
+        border: 2px solid #dd550c;
       }
     </style>
+    
   </head>
   <body>
-    <h1>Vote</h1>
+    <h1>VOTE</h1>
     <div id="questions">
       <!-- question area -->
     </div>
+  </body> 
     <script>
       let billIndex = 0;
       const fetchBills = () => {
@@ -49,24 +58,35 @@
               <button id="yes">Yes</button>
               <button id="no">No</button>
             `;
-            billEl.addEventListener('click', function() {
-              window.open(`https://www.congress.gov/bill/${bill.congress}/${bill.type}/${bill.number}`, '_blank');
-            })
             questionsContainer.appendChild(billEl);
+            let voteCounts = {};
             const yesButton = document.querySelector('#yes');
             yesButton.addEventListener('click', () => {
+              if (!voteCounts[bill.title]) {
+                voteCounts[bill.title] = { yes: 1, no: 0 };
+              } else {
+                voteCounts[bill.title].yes++;
+              }
               billIndex++;
               fetchBills();
+              displayResults();
             });
+      
             const noButton = document.querySelector('#no');
             noButton.addEventListener('click', () => {
+              if (!voteCounts[bill.title]) {
+                voteCounts[bill.title] = { yes: 0, no: 1 };
+              } else {
+                voteCounts[bill.title].no++;
+              }
               billIndex++;
               fetchBills();
+              displayResults();
             });
           });
       };
       fetchBills();
-      setInterval(fetchBills, 3000);
+      setInterval(fetchBills, 300);  
     </script>
   </body>
 </html>

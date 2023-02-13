@@ -61,8 +61,8 @@
             <button id="no">No</button>
           `;
           questionsContainer.appendChild(billEl);
+
           let voteCounts = {};
-          
           billEl.addEventListener('click', () => {
             const yesButton = document.querySelector('#yes');
             yesButton.addEventListener('click', () => {
@@ -93,7 +93,6 @@
     };
     fetchBills();
     setInterval(fetchBills, 300);
-     
   </script>
   </body>
 </html>

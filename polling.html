@@ -23,8 +23,14 @@
         border-radius: 5px;
         border: 2px solid #dd550c;
       }
+      .results {
+        margin-top: 20px;
+        background-color: #3f3f3f;
+        border: 5px solid #dd550c;
+        border-radius: 5px;
+        padding: 20px;
+      }
     </style>
-    
   </head>
   <body>
     <h1>Eagle Eye</h1>
@@ -33,66 +39,76 @@
     <div id="questions">
       <!-- question area -->
     </div>
+    <div id="results">
+      <!-- results area -->
+    </div>
   </body> 
+
   <script>
     let billIndex = 0;
-    const fetchBills = () => {
-      fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
-        .then(response => response.json())
-        .then(data => {
-          const questionsContainer = document.querySelector('#questions');
-          questionsContainer.innerHTML = '';
-          const bills = data.bills;
-          if (billIndex >= bills.length) {
-            billIndex = 0;
-          }
-          const bill = bills[billIndex];
-          const billEl = document.createElement('div');
-          billEl.classList.add('question', 'clickable');
-          billEl.innerHTML = `
-            <h2>Bill: "${bill.title}" ?</h2>
-            <p>Congress: ${bill.congress}</p>
-            <p>Latest Action: ${bill.latestAction.text}</p>
-            <p>Bill Number: ${bill.number}</p>
-            <p>Origin Chamber: ${bill.originChamber}</p>
-            <p>Bill Type: ${bill.type}</p>
-            <p>Update Date: ${bill.updateDate}</p>
-            <button id="yes">Yes</button>
-            <button id="no">No</button>
-          `;
-          questionsContainer.appendChild(billEl);
+    let voteCounts = {};
 
-          let voteCounts = {};
-          billEl.addEventListener('click', () => {
-            const yesButton = document.querySelector('#yes');
-            yesButton.addEventListener('click', () => {
-              if (!voteCounts[bill.title]) {
-                voteCounts[bill.title] = { yes: 1, no: 0 };
-              } else {
-                voteCounts[bill.title].yes++;
-              }
-              billIndex++;
-              fetchBills();
-              displayResults();
-            });
-      
-            const noButton = document.querySelector('#no');
-            noButton.addEventListener('click', () => {
-              if (!voteCounts[bill.title]) {
-                voteCounts[bill.title] = { yes: 0, no: 1 };
-              } else {
-                voteCounts[bill.title].no++;
-              }
-            });
-      
-            if (event.target.id !== 'yes' && event.target.id !== 'no') {
-              window.open(`https://www.congress.gov/bill/${bill.congress}/${bill.type}/${bill.number}`,'_blank');
-            }
-          });
-        });
-    };
+    const fetchBills = () => {
+        fetch('https://api.congress.gov/v3/bill?api_key=doXXQe0arMxuRvEzFqfOUhncHCXUscYPRZNzvHBY')
+            .then(response => response.json())
+            .then(data => {
+                const questionsContainer = document.querySelector('#questions');
+                questionsContainer.innerHTML = '';
+                const bills = data.bills;
+                if (billIndex >= bills.length) {
+                    billIndex = 0;
+                }
+                const bill = bills[billIndex];
+                const billEl = document.createElement('div');
+                billEl.classList.add('question', 'clickable');
+                billEl.innerHTML = `
+                    <h2>Bill: "${bill.title}" ?</h2>
+                    <p>Congress: ${bill.congress}</p>
+                    <p>Latest Action: ${bill.latestAction.text}</p>
+                    <p>Bill Number: ${bill.number}</p>
+                    <p>Origin Chamber: ${bill.originChamber}</p>
+                    <p>Bill Type: ${bill.type}</p>
+                    <p>Update Date: ${bill.updateDate}</p>
+                    <button id="yes">Yes</button>
+                    <button id="no">No</button>
+                `;
+                questionsContainer.appendChild(billEl);
+
+                billEl.addEventListener('click', (event) => {
+                    if (event.target.tagName !== 'BUTTON') {
+                        window.open(`https://www.congress.gov/bill/${bill.congress}/${bill.type}/${bill.number}`, '_blank');
+                    } else {
+                        const yesButton = document.querySelector('#yes');
+                        const noButton = document.querySelector('#no');
+                        if (event.target === yesButton) {
+                            if (!voteCounts[bill.title]) {
+                                voteCounts[bill.title] = { yes: 1, no: 0 };
+                            } else {
+                                voteCounts[bill.title].yes++;
+                            }
+                            billIndex++;
+                            fetchBills();
+                        } else if (event.target === noButton) {
+                            if (!voteCounts[bill.title]) {
+                                voteCounts[bill.title] = { yes: 0, no: 1 };
+                            } else {
+                                voteCounts[bill.title].no++;
+                            }
+                            billIndex++;
+                            fetchBills();
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error(error));
+    }
+
     fetchBills();
     setInterval(fetchBills, 100);
-  </script>
-  </body>
+</script>
+
+
+
+  
+</body>
 </html>
